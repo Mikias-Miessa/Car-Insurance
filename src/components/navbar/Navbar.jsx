@@ -14,7 +14,7 @@ const navLinks = [
     {
         id: 2,
         name: "About",
-        linkTo: "/about"
+        linkTo: "/#about"
     },
     {
         id: 3,
@@ -24,7 +24,7 @@ const navLinks = [
     {
         id: 4,
         name: "Contact",
-        linkTo: "/contact"
+        linkTo: "/#contact"
     },
 ]
 
