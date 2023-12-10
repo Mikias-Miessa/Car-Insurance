@@ -96,7 +96,7 @@ const Register = () => {
             Register
           </button>
         </form>
-        <Link href="/login" className="block text-blue-500 mt-5 text-base text-center">
+        <Link href="/login" className="block text-blue-500 mt-2 text-base text-center hover:underline">
           Already have an account?
         </Link>
       </div>
