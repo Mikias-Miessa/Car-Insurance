@@ -98,8 +98,9 @@ const Login = () => {
         </form>
         <div className="mt-2 flex justify-between w-full max-w-md mx-auto">
         <Link href="/register" className="text-blue-500 text-sm hover:underline">
-          Don't have an account?
+            Don&rsquo;t have an account?
         </Link>
+
         <Link href="/forget-password" className="text-blue-500 text-sm hover:underline">
           Forgot password?
         </Link>

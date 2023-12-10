@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
-const forgetPassword = () => {
+const ForgetPassword = () => {
   const [email, setEmail] = useState('');
   const [errors, setErrors] = useState({});
 
@@ -76,4 +76,4 @@ const forgetPassword = () => {
   );
 };
 
-export default forgetPassword;
+export default ForgetPassword;
