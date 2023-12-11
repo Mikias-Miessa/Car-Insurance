@@ -1,9 +1,9 @@
 'use client'
- 
 import { usePathname } from 'next/navigation'
 import { useState  } from 'react';
 import Link from 'next/link';
 import {FaBars } from 'react-icons/fa'
+import ProfileIcon from '../profileIcon/ProfileIcon';
 
 const navLinks = [
     {
@@ -18,11 +18,16 @@ const navLinks = [
     },
     {
         id: 3,
+        name: "Service",
+        linkTo: "/#service"
+    },
+    {
+        id: 4,
         name: "Register",
         linkTo: "/register"
     },
     {
-        id: 4,
+        id: 5,
         name: "Contact",
         linkTo: "/#contact"
     },
@@ -53,21 +58,26 @@ const Navbar = () => {
                                 <p className="text-white font-bold text-2xl">Car Insurance</p>
                             </Link>
                         </div>
-                        <div className="hidden md:block">
-                            <div className="ml-10 flex items-baseline space-x-4">
-                                {navLinks.map((navLink) => (
-                                    <div key={navLink.id}>
-                                        <Link href={navLink.linkTo}>
-                                            <p className={`text-gray-200 hover:text-white hover:underline px-3 py-2 rounded-md text-lg font-semibold transition duration-300 ${isActiveLink(navLink.linkTo) ? 'text-white underline' : ''}`}>
-                                                {navLink.name}
-                                            </p>
-                                        </Link>
-                                    </div>
-                                ))}
+                        <div className='flex items-center'>
+                            <div className="hidden md:block">
+                                <div className="ml-10 flex items-baseline space-x-4">
+                                    {navLinks.map((navLink) => (
+                                        <div key={navLink.id}>
+                                            <Link href={navLink.linkTo}>
+                                                <p className={`text-gray-200 hover:text-white hover:underline px-3 py-2 rounded-md text-lg font-semibold transition duration-300 ${isActiveLink(navLink.linkTo) ? 'text-white underline' : ''}`}>
+                                                    {navLink.name}
+                                                </p>
+                                            </Link>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                        <div className="-mr-2 flex md:hidden">
-                            <FaBars className=" text-3xl rounded-md text-white"  onClick={toggleMenu} />
+                            <div className='md:mx-0 mx-4'>
+                                <ProfileIcon />
+                            </div>
+                            <div className="-mr-2 flex md:hidden">
+                                <FaBars className=" text-3xl rounded-md text-white"  onClick={toggleMenu} />
+                            </div>
                         </div>
                     </div>
                 </div>
