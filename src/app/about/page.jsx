@@ -4,7 +4,7 @@ import stress from '../../../public/assets/stress.png'
 import Image from 'next/image'
 const About = () => {
   return (
-    <div id='about' className="min-h-screen flex  justify-center">
+    <div id='about' className="min-h-fit flex mb-10 justify-center">
       <div className='max-w-screen-lg p-4 mx-auto flex flex-col justify-center w-full h-full'>
         <h1 className="text-center font-bold text-4xl mt-20">
         Why Need Us?
