@@ -144,7 +144,7 @@ for (const pair of formData.entries()) {
               onChange={handleChange}
               onBlur={handleBlur}
               placeholder="Enter your Full Name"
-              className={`p-2 mb-4 bg-transparent border-2 rounded-md text-black focus:outline-none ${
+              className={`p-2 mb-4 bg-sky-200 shadow-md rounded-md text-black focus:outline-none ${
                 errors.name ? 'border-red-500' : 'border-sky-400'
               }`}
             />
@@ -159,7 +159,7 @@ for (const pair of formData.entries()) {
               onChange={handleChange}
               onBlur={handleBlur}
               placeholder="Enter your Email"
-              className={`mb-4 p-2 bg-transparent border-2  rounded-md text-black focus:outline-none ${
+              className={`mb-4 p-2 bg-sky-200 shadow-md rounded-md text-black focus:outline-none ${
                 errors.email ? 'border-red-500' : 'border-sky-400'
               }`}
             />
@@ -172,7 +172,7 @@ for (const pair of formData.entries()) {
               onChange={handleChange}
               onBlur={handleBlur}
               placeholder="Enter your Phone Number"
-              className={`p-2 mb-4 bg-transparent border-2 rounded-md text-black focus:outline-none ${
+              className={`p-2 mb-4 bg-sky-200 shadow-md rounded-md text-black focus:outline-none ${
                 errors.phoneNumber ? 'border-red-500' : 'border-sky-400'
               }`}
             />
@@ -185,7 +185,7 @@ for (const pair of formData.entries()) {
               onChange={handleChange}
               onBlur={handleBlur}
               placeholder="Enter your Subject"
-              className={`p-2 mb-4 bg-transparent border-2 rounded-md text-black focus:outline-none ${
+              className={`p-2 mb-4 bg-sky-200 shadow-md rounded-md text-black focus:outline-none ${
                 errors.subject ? 'border-red-500' : 'border-sky-400'
               }`}
             />
@@ -198,7 +198,7 @@ for (const pair of formData.entries()) {
               onChange={handleChange}
               onBlur={handleBlur}
               placeholder="Enter your Message"
-              className={`p-2 bg-transparent border-2 rounded-md text-black focus:outline-none ${
+              className={`p-2 bg-sky-200 shadow-md rounded-md text-black focus:outline-none ${
                 errors.message ? 'border-red-500' : 'border-sky-400'
               }`}
             ></textarea>
@@ -206,7 +206,7 @@ for (const pair of formData.entries()) {
 
              <button
       type="submit"
-      className="text-white bg-gradient-to-r from-sky-300 to-sky  to-sky-500 px-6 py-3 my-8 mx-auto flex items-center rounded-md hover:scale-110 duration-300"
+      className="text-white bg-gradient-to-r from-sky-400 to-sky  to-sky-600 px-6 py-3 my-8 mx-auto flex items-center rounded-md hover:scale-110 duration-300"
       disabled={loading} // Disable the button when loading is true
    
     >
