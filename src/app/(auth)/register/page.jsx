@@ -1,12 +1,31 @@
 "use client"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-
+import {  useDispatch, useSelector } from 'react-redux';
+import { registerUser, reset } from '@/features/user/userSlice';
+import { ToastContainer, toast } from 'react-toastify';
 const Register = () => {
+
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
-
+  const{newUserStatus} = useSelector((state) => state.user);
+  useEffect(() => {
+    if (newUserStatus === 'success') {
+       toast.success("Registered Successfully", {
+        position: "top-center"
+      });
+      dispatch(reset())
+    }
+    if (newUserStatus === 'failed') {
+       toast.error("  Registration Failed !", {
+        position: "top-center"
+      });
+      dispatch(reset())
+}
+     
+  },[newUserStatus])
   const handleBlur = (field) => {
     // Clear the specific error when the field is blurred
     setErrors((prevErrors) => ({ ...prevErrors, [field]: '' }));
@@ -29,17 +48,24 @@ const Register = () => {
       setErrors(validationErrors);
       return;
     }
-
+    const userData = { 
+      email: email,
+      password:password
+    }
     // Submit the form
-    console.log('Email:', email);
-    console.log('Password:', password);
+    dispatch(registerUser(userData))
+    // console.log('Email:', email);
+    // console.log('Password:', password);
 
     // Reset form fields and errors
     setEmail('');
     setPassword('');
     setErrors({});
   };
-
+  const notify = () => {
+    console.log('clicked')
+   toast.success('User Registerd Successfully') 
+  } 
   return (
     <div id='register' className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded shadow-md w-96">
@@ -92,14 +118,17 @@ const Register = () => {
           <button
             type="submit"
             className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none"
+            disabled={newUserStatus === 'pending'}
           >
-            Register
+            {newUserStatus === 'pending'?'Registering...':'Register'}
           </button>
         </form>
         <Link href="/login" className="block text-blue-500 mt-2 text-base text-center hover:underline">
           Already have an account?
         </Link>
       </div>
+      {/* <button onClick={notify}>test</button> */}
+      <ToastContainer />
     </div>
   );
 };

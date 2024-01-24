@@ -1,11 +1,31 @@
 "use client"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-
+import {  useDispatch, useSelector } from 'react-redux';
+import { logInUser, reset } from '@/features/user/userSlice';
+import { ToastContainer, toast } from 'react-toastify';
 const Login = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const { login } = useSelector((state) => state.user);
+  
+   useEffect(() => {
+    if (login === 'success') {
+       toast.success("Login Successful", {
+        position: "top-center"
+      });
+      dispatch(reset())
+    }
+    if (login === 'failed') {
+       toast.error("Login Failed !", {
+        position: "top-center"
+      });
+      dispatch(reset())
+}
+     
+  },[login])
 
   const handleBlur = (field) => {
     // Clear the specific error when the field is blurred
@@ -30,9 +50,14 @@ const Login = () => {
       return;
     }
 
+    const userData = {
+      email: email,
+      password: password
+    }
     // Submit the form
-    console.log('Email:', email);
-    console.log('Password:', password);
+    dispatch(logInUser(userData))
+    // console.log('Email:', email);
+    // console.log('Password:', password);
 
     // Reset form fields and errors
     setEmail('');
@@ -92,8 +117,9 @@ const Login = () => {
           <button
             type="submit"
             className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none"
+            disabled={login === 'pending'}
           >
-            Login
+            {login === 'pending'?'Loading...':'Login'}
           </button>
         </form>
         <div className="mt-2 flex justify-between w-full max-w-md mx-auto">
@@ -106,6 +132,7 @@ const Login = () => {
         </Link>
       </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
