@@ -4,28 +4,78 @@ import Link from 'next/link';
 import {  useDispatch, useSelector } from 'react-redux';
 import { registerUser, reset } from '@/features/user/userSlice';
 import { ToastContainer, toast } from 'react-toastify';
+import {useRouter} from 'next/navigation'
 const Register = () => {
 
   const dispatch = useDispatch();
+  const router = useRouter();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
-  const{newUserStatus} = useSelector((state) => state.user);
-  useEffect(() => {
-    if (newUserStatus === 'success') {
-       toast.success("Registered Successfully", {
-        position: "top-center"
-      });
-      dispatch(reset())
+  const { error, user, isAuthenticated,isSuccess, loading,newUserStatus } = useSelector((state) => state.user);
+//   useEffect(() => {
+//     // Move the redirection logic to a client-side effect
+//     // const handleRedirect = () => {
+//     //   if (newUserStatus === 'success') {
+//     //     toast.success('Registered Successfully', {
+//     //       position: 'top-center',
+//     //     });
+//     //     router.push('/home');
+//     //     dispatch(reset());
+//     //   }
+//     //   if (newUserStatus === 'failed') {
+//     //     toast.error('Registration Failed!', {
+//     //       position: 'top-center',
+//     //     });
+//     //     dispatch(reset());
+//     //   }
+//     // };
+
+//       useEffect(() => {
+ 
+// if(isSuccess || user ){
+ 
+//  toast.success('Registeration Successfull', {
+//           position: 'top-center',
+//         });
+// }
+// if( !loading && isAuthenticated){
+
+//    toast.success('Registeration Successfull', {
+//           position: 'top-center',
+//         });
+//   router.push('/home')
+//     }
+//     dispatch(reset())
+//   }, [user, isAuthenticated, isSuccess, loading])
+
+//     // Run the redirection logic on the client side
+//     handleRedirect();
+  //   }, [newUserStatus, dispatch, router]);
+    useEffect(() => {
+ 
+if(isSuccess || user ){
+ 
+ toast.success('Registeration Successfull', {
+          position: 'top-center',
+        });
+      }
+       if (newUserStatus === 'failed') {
+        toast.error('Registration Failed!', {
+          position: 'top-center',
+        });
+        
+      }    
+if( !loading && isAuthenticated){
+
+  // toast.success('Login Successfull', {
+  //         position: 'top-center',
+  //       });
+  router.push('/home')
     }
-    if (newUserStatus === 'failed') {
-       toast.error("  Registration Failed !", {
-        position: "top-center"
-      });
-      dispatch(reset())
-}
-     
-  },[newUserStatus])
+    dispatch(reset())
+  }, [user, isAuthenticated, isSuccess, loading])
   const handleBlur = (field) => {
     // Clear the specific error when the field is blurred
     setErrors((prevErrors) => ({ ...prevErrors, [field]: '' }));
@@ -62,10 +112,7 @@ const Register = () => {
     setPassword('');
     setErrors({});
   };
-  const notify = () => {
-    console.log('clicked')
-   toast.success('User Registerd Successfully') 
-  } 
+  
   return (
     <div id='register' className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded shadow-md w-96">
@@ -118,9 +165,9 @@ const Register = () => {
           <button
             type="submit"
             className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none"
-            disabled={newUserStatus === 'pending'}
+            disabled={loading}
           >
-            {newUserStatus === 'pending'?'Registering...':'Register'}
+            {loading?'Registering...':'Register'}
           </button>
         </form>
         <Link href="/login" className="block text-blue-500 mt-2 text-base text-center hover:underline">

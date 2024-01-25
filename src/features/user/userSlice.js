@@ -4,7 +4,10 @@ import axios from 'axios'
 const initialState = {
     users: [],
     user: null,
-    loading: true,
+    token: typeof window !== 'undefined' ? localStorage.getItem('token'): null,
+    isAuthenticated: false,
+    isSuccess: false,
+    loading: false,
     error: null,
     updateUserStatus: '',
     newUserStatus: '',
@@ -30,7 +33,14 @@ const initialState = {
         try {
         const res = await axios.post('http://localhost:8000/users/register', body, config);
   
-        return res.data;
+       if(res.data){
+
+         localStorage.setItem('token', res.data.token);
+         
+      }
+      if (res !== undefined) {
+           return res.data
+      }
         
         
         } catch (error) {
@@ -58,7 +68,13 @@ const initialState = {
         try {
         const res = await axios.post('http://localhost:8000/users/login', body, config);
   
-        return res.data;
+       if(res.data){
+
+        localStorage.setItem('token', res.data.token);
+      }
+      if (res !== undefined) {
+           return res.data
+      }
         
         
         } catch (error) {
@@ -71,18 +87,48 @@ const initialState = {
         }
     }
 )
+ export const loadUser = createAsyncThunk(
+    "user/loadUser",
+    async (dispatch, getState) =>{
 
+
+        setAuthToken(localStorage.token);
+        try {
+            // 
+        const res = await axios.get('http://localhost:8000/users/profile');
+        
+        // window.location.href = 'http://localhost:3000/admin/dashboard'
+        return res.data
+        } catch (error) {
+             const message = (error.response && error.response.data && error.response.data.errors) || error.message || error.toString();
+          
+               
+             return thunkAPI.rejectWithValue(message)
+        }
+        
+    }
+)
 
   
   export const userSlice = createSlice({
       name: 'user',
       initialState,
-      reducers: {
+    reducers: {
+        logout: (state, action)=>{
+           
+            state.token= null,
+            state.isAuthenticated= false,
+            state.user= null,
+            state.loading = false
+          },
          reset: (state) => {
           // state.users = [];
           state.updateUserStatus = ''
           state.newUserStatus = ''
           state.deleteUserStatus = ''
+          state.isSuccess = false
+           state.loading = false
+           state.login = ''
     },
     },
     extraReducers: (builder) => {
@@ -91,18 +137,24 @@ const initialState = {
           state.newUserStatus = 'pending'
         }).addCase(registerUser.fulfilled, (state, action) => {
           state.loading = false
-          state.users = [...state.users, action.payload]
-          state.newUserStatus = 'success' 
+          state.isAuthenticated = true
+          state.isSuccess = true
+          state.login = 'success'
+          state.user = action.payload.user 
         }).addCase(registerUser.rejected, (state, action) => {
             state.loading = false
-            state.newUserStatus = 'failed'
-          state.error = action.error
+          state.newUserStatus = 'failed'
+          state.isSuccess = false
+            state.error = action.error
         }).addCase(logInUser.pending, (state) => {
             state.loading = true
             state.login = 'pending'
-        }).addCase(logInUser.fulfilled, (state) => {
-            state.loading = false
-            state.login = 'success'
+        }).addCase(logInUser.fulfilled, (state,action) => {
+          state.loading = false
+          state.isAuthenticated = true
+          state.isSuccess = true
+          state.login = 'success'
+          state.user = action.payload.user
         }).addCase(logInUser.rejected, (state) => {
             state.loading = false
             state.login = 'failed'
@@ -111,6 +163,6 @@ const initialState = {
 
   });
 
-  export const { reset } = userSlice.actions 
+  export const { reset, logout } = userSlice.actions 
 
   export default userSlice.reducer

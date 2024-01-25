@@ -3,14 +3,22 @@ import { Menu, Transition } from '@headlessui/react'
 import Link from 'next/link';
 import user from "../../../public/assets/user.png"
 import Image from 'next/image';
-
+import { useDispatch } from 'react-redux';
+import { logout } from '../../features/user/userSlice'
+import { useRouter } from 'next/navigation';
 const ProfileIcon = () => {
+    const router = useRouter()
+    const dispatch = useDispatch()
+    const logoutUser = () => {
+        dispatch(logout())
+        router.push('/home')
+    }
   return (
     <Menu as="div" className="relative">
     <div>
         <Menu.Button className="ml-2 bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-neutral-400">
             <span className="sr-only">Open user menu</span>
-            <Image src={user} alt='user' className="h-8 w-8 rounded-full bg-sky-500 bg-cover bg-no-repeat bg-center" />
+            <Image src={user} alt='user' height={28} width={32} className="rounded-full bg-sky-500 bg-cover bg-no-repeat bg-center" />
         </Menu.Button>
     </div>
     <Transition
@@ -35,7 +43,7 @@ const ProfileIcon = () => {
             <Menu.Item>
                 {({ active }) => (
                     <div
-                        onClick={""}
+                        onClick={logoutUser}
                         className={`${active ? 'bg-gray-200' : ""} rounded-md px-4 py-2 text-gray-700 cursor-pointer focus:bg-gray-200`}
                     >
                         Sign Out

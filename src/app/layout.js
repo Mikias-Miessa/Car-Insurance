@@ -16,13 +16,15 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="flex flex-col min-h-screen">
       
-      <Navbar />
+      {/* <Navbar /> */}
         <main className="flex-grow">
           <Provider store={store}>
+            <Navbar/>
             {children}
+            <Footer/>
             </Provider>
         </main>
-          <Footer />
+          {/* <Footer /> */}
          
     </body>
       </html>

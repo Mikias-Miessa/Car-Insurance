@@ -4,7 +4,7 @@ import { useState  } from 'react';
 import Link from 'next/link';
 import {FaBars } from 'react-icons/fa'
 import ProfileIcon from '../profileIcon/ProfileIcon';
-
+import {  useDispatch, useSelector } from 'react-redux';
 const navLinks = [
     {
         id: 1,
@@ -21,11 +21,11 @@ const navLinks = [
         name: "Service",
         linkTo: "/#service"
     },
-    {
-        id: 4,
-        name: "Register",
-        linkTo: "/register"
-    },
+    // {
+    //     id: 4,
+    //     name: "Register",
+    //     linkTo: "/register"
+    // },
     {
         id: 5,
         name: "Contact",
@@ -34,6 +34,7 @@ const navLinks = [
 ]
 
 const Navbar = () => {
+    const { isAuthenticated} = useSelector((state) => state.user);
     const pathname = usePathname()
     const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -70,11 +71,22 @@ const Navbar = () => {
                                             </Link>
                                         </div>
                                     ))}
+                                {!isAuthenticated &&
+                                     <Link href={'/register'}>
+                                    <p className={'text-gray-200 hover:text-white hover:underline px-3 py-2 rounded-md text-lg font-semibold transition duration-300 '}>
+                                                    Register
+                                                </p>
+                                </Link>
+                                }
+                               
                                 </div>
-                            </div>
-                            <div className='md:mx-0 mx-4'>
+                        </div>
+                        {isAuthenticated &&
+                        <div className='md:mx-0 mx-4'>
                                 <ProfileIcon />
                             </div>
+                        }
+                            
                             <div className="-mr-2 flex md:hidden">
                                 <FaBars className=" text-3xl rounded-md text-white"  onClick={toggleMenu} />
                             </div>

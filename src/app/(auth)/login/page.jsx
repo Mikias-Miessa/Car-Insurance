@@ -4,18 +4,54 @@ import Link from 'next/link';
 import {  useDispatch, useSelector } from 'react-redux';
 import { logInUser, reset } from '@/features/user/userSlice';
 import { ToastContainer, toast } from 'react-toastify';
+import { useRouter } from 'next/navigation'
 const Login = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
-  const { login } = useSelector((state) => state.user);
+  const { login, user, isAuthenticated,isSuccess, loading } = useSelector((state) => state.user);
   
-   useEffect(() => {
+//    useEffect(() => {
+//     if (login === 'success') {
+//        toast.success("Login Successful", {
+//         position: "top-center"
+//        });
+//       router.push('/profile');
+//       dispatch(reset())
+//     }
+//     if (login === 'failed') {
+//        toast.error("Login Failed !", {
+//         position: "top-center"
+//       });
+//       dispatch(reset())
+// }
+     
+//    }, [login])
+  
+  useEffect(() => {
+ 
+if(isSuccess || user ){
+ 
+ toast.success('Login Successfull', {
+          position: 'top-center',
+        });
+}
+if( !loading && isAuthenticated){
+
+  toast.success('Login Successfull', {
+          position: 'top-center',
+        });
+  router.push('/home')
+    }
+
     if (login === 'success') {
        toast.success("Login Successful", {
         position: "top-center"
-      });
+       });
+     
       dispatch(reset())
     }
     if (login === 'failed') {
@@ -24,8 +60,12 @@ const Login = () => {
       });
       dispatch(reset())
 }
-     
-  },[login])
+    // dispatch(reset())
+  }, [user, isAuthenticated, isSuccess, loading,login])
+  
+
+
+
 
   const handleBlur = (field) => {
     // Clear the specific error when the field is blurred
@@ -117,9 +157,9 @@ const Login = () => {
           <button
             type="submit"
             className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 focus:outline-none"
-            disabled={login === 'pending'}
+            disabled={loading}
           >
-            {login === 'pending'?'Loading...':'Login'}
+            {loading?'Loading...':'Login'}
           </button>
         </form>
         <div className="mt-2 flex justify-between w-full max-w-md mx-auto">
