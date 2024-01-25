@@ -127,8 +127,8 @@ const initialState = {
           state.newUserStatus = ''
           state.deleteUserStatus = ''
           state.isSuccess = false
-           state.loading = false
-           state.login = ''
+          state.loading = false
+          state.login = ''
     },
     },
     extraReducers: (builder) => {
