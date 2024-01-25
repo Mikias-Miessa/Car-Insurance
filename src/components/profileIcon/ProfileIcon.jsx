@@ -40,6 +40,15 @@ const ProfileIcon = () => {
                     )}
                 </Menu.Item>
             </Link>
+            <Link href='/change-password' >
+                <Menu.Item>
+                    {({ active }) => (
+                        <div className={`${active ? 'bg-gray-200' : "" } rounded-md px-4 py-2 text-gray-700 cursor-pointer focus:bg-gray-200`}>
+                                change Password
+                        </div>
+                    )}
+                </Menu.Item>
+            </Link>
             <Menu.Item>
                 {({ active }) => (
                     <div
