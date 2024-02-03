@@ -4,7 +4,7 @@ import Link from 'next/link';
 import user from "../../../public/assets/user.png"
 import Image from 'next/image';
 import { useDispatch } from 'react-redux';
-import { logout } from '../../features/user/userSlice'
+import { logout } from '../../features/auth/authSlice'
 import { useRouter } from 'next/navigation';
 const ProfileIcon = () => {
     const router = useRouter()

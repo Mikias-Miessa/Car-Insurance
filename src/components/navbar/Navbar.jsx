@@ -34,7 +34,7 @@ const navLinks = [
 ]
 
 const Navbar = () => {
-    const { isAuthenticated} = useSelector((state) => state.user);
+    const { isAuthenticated} = useSelector((state) => state.auth);
     const pathname = usePathname()
     const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -106,6 +106,14 @@ const Navbar = () => {
                                 </Link>
                             </div>
                         ))}
+                    {
+                        !isAuthenticated && 
+                         <Link href={'/register'} onClick={toggleMenu}>
+                                    <button className={'text-gray-200 hover:text-white hover:underline block px-3 py-2 rounded-md text-lg font-semibold text-center '}>
+                                                    Register
+                                                </button>
+                                </Link>
+                        }
                         
                     </div>
                 </div>

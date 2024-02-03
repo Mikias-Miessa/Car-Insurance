@@ -1,13 +1,21 @@
 "use client"
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addProfile, loadUser } from '@/features/user/userSlice';
 const MyForm = () => {
+
+  const dispatch = useDispatch()
+  const { profile } = useSelector((state) => state.user);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [selectedOption, setSelectedOption] = useState('');
   const [image, setImage] = useState(null);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    dispatch(loadUser());
+  },[profile])
 
   const validateForm = () => {
     let valid = true;
@@ -64,13 +72,16 @@ const MyForm = () => {
     e.preventDefault();
     if (validateForm()) {
       // Perform form submission logic here
-      console.log('Form submitted!');
-      console.log('First Name:', firstName);
-      console.log('Last Name:', lastName);
-      console.log('Phone Number:', phoneNumber);
-      console.log('Selected Option:', selectedOption);
-      console.log('Image:', image);
-      // Reset form fields
+       const formData = new FormData();
+      formData.append('firstName', firstName);
+      formData.append('lastName', lastName);
+      formData.append('phoneNumber', phoneNumber);
+      formData.append('selectedOption', selectedOption);
+      formData.append('image', image);
+
+      dispatch(addProfile(formData));
+
+     
       setFirstName('');
       setLastName('');
       setPhoneNumber('');
@@ -82,7 +93,8 @@ const MyForm = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center md:mt-10 mt-0 px-5 md:px-0">
-      <form className="max-w-md mx-auto p-8 bg-white rounded shadow my-10">
+      {profile === null ?
+    (<form className="max-w-md mx-auto p-8 bg-white rounded shadow my-10">
         <h2 className="text-2xl mb-4 text-center">Build profile</h2>
         <div className="mb-4">
           <label className="block mb-2 text-gray-800" htmlFor="firstName">
@@ -191,7 +203,16 @@ const MyForm = () => {
           Submit
         </button>
       </div>
-      </form>
+        </form>) : (
+          <div className='flex flex-col gap-4 font-semibold text-xl justify-center items-center text-black '>
+            <p>{ profile.firstName}</p>
+            <p>{ profile.lastName}</p>
+            <p>{ profile.phone}</p>
+            <p>{ profile.insurance}</p>
+          </div>
+      )  
+    }
+      
     </div>
   );
 };

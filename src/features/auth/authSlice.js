@@ -1,140 +1,142 @@
 import {createSlice,createAsyncThunk} from '@reduxjs/toolkit';
-import setAuthToken from '../../utils/setAuthToken'
-import axios from 'axios';
-import {useRouter} from 'next/router'
+import axios from 'axios'
 
 const initialState = {
+    user: null,
     token: typeof window !== 'undefined' ? localStorage.getItem('token'): null,
     isAuthenticated: false,
     isSuccess: false,
-    loading: true,
-    user: null,
-    dashboard: null,
+    loading: false,
     error: null,
-    status: ''
+    login: '',
+    newUserStatus:''
   };
 
-  //Load User
-  export const loadUser = createAsyncThunk(
-    "auth/loadUser",
-    async (dispatch, getState) =>{
-const router = useRouter();
 
-        setAuthToken(localStorage.token);
+
+ export const registerUser = createAsyncThunk(
+    "auth/register",
+    async (user,thunkAPI) =>{
+     // 
+      const { email,  password } = user;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const body = JSON.stringify({ email, password });
+      console.log(body)
         try {
-            // 
-        const res = await axios.get('http://localhost:3000/api/auth/user');
+        const res = await axios.post('http://localhost:8000/users/register', body, config);
+  
+       if(res.data){
+
+         localStorage.setItem('token', res.data.token);
+         
+      }
+      if (res !== undefined) {
+           return res.data
+      }
         
-        window.location.href = 'http://localhost:3000/admin/dashboard'
-        return res.data
-        } catch (err) {
+        
+        } catch (error) {
+          
+          const message = (error.response && error.response.data && error.response.data.errors) || error.message || error.toString();
+          
+               
+             return thunkAPI.rejectWithValue(message)
             
         }
-        
     }
 )
-
- //Loign User
- export const login = createAsyncThunk(
-  "auth/login",
-  async (user,thunkAPI) =>{
-    // 
-    const { email, password } = user;
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    const body = JSON.stringify({ email, password });
-      try {
-      const res = await axios.post('/api/auth/login', body, config);
-
-      if(res.data){
+ export const logInUser = createAsyncThunk(
+    "auth/login",
+    async (user,thunkAPI) =>{
+     // 
+      const { email,  password } = user;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const body = JSON.stringify({ email, password });
+    //   console.log(body)
+        try {
+        const res = await axios.post('http://localhost:8000/users/login', body, config);
+  
+       if(res.data){
 
         localStorage.setItem('token', res.data.token);
       }
       if (res !== undefined) {
            return res.data
       }
-      
-      } catch (error) {
         
-        const message = (error.response && error.response.data && error.response.data.errors) || error.message || error.toString();
         
-             
-           return thunkAPI.rejectWithValue(message)
+        } catch (error) {
           
-      }
-      
-  }
+          const message = (error.response && error.response.data && error.response.data.errors) || error.message || error.toString();
+          
+               
+             return thunkAPI.rejectWithValue(message)
+            
+        }
+    }
 )
+
 
   
   export const authSlice = createSlice({
       name: 'auth',
       initialState,
-      reducers: {
-          logout: (state, action)=>{
+    reducers: {
+        logout: (state, action)=>{
            
             state.token= null,
             state.isAuthenticated= false,
             state.user= null,
             state.loading = false
           },
-          reset: (state)=>{
-            state.isSuccess= false,
-            state.error= null,
-            state.loading = true;
-            state.status=''
-          }
-      },
-      extraReducers: (builder) => {
-        builder
-          .addCase(loadUser.pending, (state, action) => {
-            state.loading = true 
-          })
-          // You can chain calls, or have separate `builder.addCase()` lines each time
-          .addCase(loadUser.fulfilled, (state, action) => {
-            state.loading = false;
-            
-            state.auth = action.payload
-            state.isAuthenticated = true;
-          })
-          // You can match a range of action types
-          .addCase(
-            loadUser.rejected,
-            // `action` will be inferred as a RejectedAction due to isRejectedAction being defined as a type guard
-            (state, action) => {
-                state.loading = false;
-                // state.error= action.error.message
-            }
-          )
-          .addCase(login.pending, (state, action) => {
-            state.loading = true 
-            state.status='pending';
-          })
-          .addCase(login.fulfilled, (state, action) => {
-            state.loading = false;
-            state.isSuccess = true;
-            
-            state.user = action.payload.user
-            state.isAuthenticated = true;
-            state.status='';
-
-          })
-          .addCase(
-            login.rejected,
-            (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            state.status='error';
-
-            }
-          )
-      },
+         reset: (state) => {
+          // state.users = [];
+          state.newUserStatus = ''
+          state.isSuccess = false
+          state.loading = false
+          state.login = ''
+    },
+    },
+    extraReducers: (builder) => {
+      builder.addCase(registerUser.pending, (state) => {
+          state.loading = true
+          state.newUserStatus = 'pending'
+        }).addCase(registerUser.fulfilled, (state, action) => {
+          state.loading = false
+          state.isAuthenticated = true
+          state.isSuccess = true
+          state.login = 'success'
+          state.user = action.payload.user 
+        }).addCase(registerUser.rejected, (state, action) => {
+          state.loading = false
+          state.newUserStatus = 'failed'
+          state.isSuccess = false
+          state.error = action.error
+        }).addCase(logInUser.pending, (state) => {
+            state.loading = true
+            state.login = 'pending'
+        }).addCase(logInUser.fulfilled, (state,action) => {
+          state.loading = false
+          state.isAuthenticated = true
+          state.isSuccess = true
+          state.login = 'success'
+          state.user = action.payload.user
+        }).addCase(logInUser.rejected, (state) => {
+            state.loading = false
+            state.login = 'failed'
+        })
+      }
 
   });
 
-  export const { logout,reset} = authSlice.actions
+  export const { reset, logout } = authSlice.actions 
 
   export default authSlice.reducer

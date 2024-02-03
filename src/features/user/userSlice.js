@@ -2,91 +2,45 @@ import {createSlice,createAsyncThunk} from '@reduxjs/toolkit';
 import axios from 'axios'
 
 const initialState = {
-    users: [],
-    user: null,
-    token: typeof window !== 'undefined' ? localStorage.getItem('token'): null,
-    isAuthenticated: false,
+    profile: null,
     isSuccess: false,
     loading: false,
     error: null,
     updateUserStatus: '',
-    newUserStatus: '',
+    newProfileStatus: '',
     deleteUserStatus:'',
-    getuser: 'idel',
-    login:''
   };
 
 
-
- export const registerUser = createAsyncThunk(
-    "user/register",
-    async (user,thunkAPI) =>{
-     // 
-      const { email,  password } = user;
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-      const body = JSON.stringify({ email, password });
-      console.log(body)
-        try {
-        const res = await axios.post('http://localhost:8000/users/register', body, config);
-  
-       if(res.data){
-
-         localStorage.setItem('token', res.data.token);
-         
-      }
-      if (res !== undefined) {
-           return res.data
-      }
-        
-        
-        } catch (error) {
-          
-          const message = (error.response && error.response.data && error.response.data.errors) || error.message || error.toString();
-          
-               
-             return thunkAPI.rejectWithValue(message)
-            
-        }
+export const addProfile = createAsyncThunk(
+  "user/addprofile",
+  async (formData, thunkAPI) => {
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    for (const entry of formData.entries()) {
+      console.log('this is the form data: ', entry[0], entry[1])
     }
-)
- export const logInUser = createAsyncThunk(
-    "user/login",
-    async (user,thunkAPI) =>{
-     // 
-      const { email,  password } = user;
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-      const body = JSON.stringify({ email, password });
-    //   console.log(body)
-        try {
-        const res = await axios.post('http://localhost:8000/users/login', body, config);
-  
-       if(res.data){
+        setAuthToken(localStorage.token);
+    try {
+      const res = await axios.post('http://localhost:8000/users/profile', formData, config);
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      
+      const message =
+        (error.response && error.response.data && error.response.data.errors) ||
+        error.message ||
+        error.toString();
+      // console.log(message);
 
-        localStorage.setItem('token', res.data.token);
-      }
-      if (res !== undefined) {
-           return res.data
-      }
-        
-        
-        } catch (error) {
-          
-          const message = (error.response && error.response.data && error.response.data.errors) || error.message || error.toString();
-          
-               
-             return thunkAPI.rejectWithValue(message)
-            
-        }
+      return thunkAPI.rejectWithValue(message);
     }
-)
+  }
+ )
+
  export const loadUser = createAsyncThunk(
     "user/loadUser",
     async (dispatch, getState) =>{
@@ -97,7 +51,7 @@ const initialState = {
             // 
         const res = await axios.get('http://localhost:8000/users/profile');
         
-        // window.location.href = 'http://localhost:3000/admin/dashboard'
+        // window.location.href = 'http://localhost:3000/admin/dashboard' 
         return res.data
         } catch (error) {
              const message = (error.response && error.response.data && error.response.data.errors) || error.message || error.toString();
@@ -114,55 +68,40 @@ const initialState = {
       name: 'user',
       initialState,
     reducers: {
-        logout: (state, action)=>{
-           
-            state.token= null,
-            state.isAuthenticated= false,
-            state.user= null,
-            state.loading = false
-          },
+        
          reset: (state) => {
-          // state.users = [];
           state.updateUserStatus = ''
-          state.newUserStatus = ''
           state.deleteUserStatus = ''
           state.isSuccess = false
           state.loading = false
-          state.login = ''
+         
     },
     },
     extraReducers: (builder) => {
-      builder.addCase(registerUser.pending, (state) => {
-          state.loading = true
-          state.newUserStatus = 'pending'
-        }).addCase(registerUser.fulfilled, (state, action) => {
-          state.loading = false
-          state.isAuthenticated = true
-          state.isSuccess = true
-          state.login = 'success'
-          state.user = action.payload.user 
-        }).addCase(registerUser.rejected, (state, action) => {
-            state.loading = false
-          state.newUserStatus = 'failed'
-          state.isSuccess = false
-            state.error = action.error
-        }).addCase(logInUser.pending, (state) => {
+      builder.addCase(addProfile.pending, (state) => {
             state.loading = true
-            state.login = 'pending'
-        }).addCase(logInUser.fulfilled, (state,action) => {
-          state.loading = false
-          state.isAuthenticated = true
-          state.isSuccess = true
-          state.login = 'success'
-          state.user = action.payload.user
-        }).addCase(logInUser.rejected, (state) => {
+            state.newProfileStatus = 'pending'
+        }).addCase(addProfile.fulfilled, (state, action) => {
             state.loading = false
-            state.login = 'failed'
+            state.profile = action.payload.profile 
+        }).addCase(addProfile.rejected, (state, action) => {
+            state.loading = false
+            state.newProfileStatus = 'failed'
+            state.isSuccess = false
+            state.error = action.error
+        }).addCase(loadUser.pending, (state) => {
+            state.loading = true
+        }).addCase(loadUser.fulfilled, (state, action) =>{
+            state.loading = false
+            state.profile = action.payload.profile
+        }).addCase(loadUser.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.error
         })
       }
 
   });
 
-  export const { reset, logout } = userSlice.actions 
+  export const { reset } = userSlice.actions 
 
   export default userSlice.reducer

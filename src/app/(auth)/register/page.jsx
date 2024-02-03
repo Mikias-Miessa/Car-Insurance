@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {  useDispatch, useSelector } from 'react-redux';
-import { registerUser, reset } from '@/features/user/userSlice';
+import { registerUser, reset } from '@/features/auth/authSlice';
 import { ToastContainer, toast } from 'react-toastify';
 import {useRouter} from 'next/navigation'
 const Register = () => {
@@ -13,7 +13,7 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
-  const { error, user, isAuthenticated,isSuccess, loading,newUserStatus } = useSelector((state) => state.user);
+  const { error, user, isAuthenticated,isSuccess, loading,newUserStatus } = useSelector((state) => state.auth);
 //   useEffect(() => {
 //     // Move the redirection logic to a client-side effect
 //     // const handleRedirect = () => {
@@ -72,7 +72,7 @@ if( !loading && isAuthenticated){
   // toast.success('Login Successfull', {
   //         position: 'top-center',
   //       });
-  router.push('/home')
+  router.push('/profile')
     }
     dispatch(reset())
   }, [user, isAuthenticated, isSuccess, loading])

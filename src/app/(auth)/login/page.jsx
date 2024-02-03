@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {  useDispatch, useSelector } from 'react-redux';
-import { logInUser, reset } from '@/features/user/userSlice';
+import { logInUser, reset } from '@/features/auth/authSlice';
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation'
 const Login = () => {
@@ -12,7 +12,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
-  const { login, user, isAuthenticated,isSuccess, loading } = useSelector((state) => state.user);
+  const { login, user, isAuthenticated,isSuccess, loading } = useSelector((state) => state.auth);
   
 //    useEffect(() => {
 //     if (login === 'success') {
